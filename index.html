@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sextant + Intercept Calculator (v1.0-B)</title>
+
+<meta name="theme-color" content="#0b3d91">
+<link rel="manifest" href="manifest.json">
+
+<style>
+/* ===============================
+   BASE THEME
+================================ */
+:root{
+  --bg:#0b1220;
+  --card:#121c2f;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --accent:#38bdf8;
+  --border:rgba(148,163,184,.25);
+  --radius:14px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#050914,#0b1220);
+  color:var(--text);
+}
+
+/* ===============================
+   HEADER
+================================ */
+header{
+  position:sticky;
+  top:0;
+  background:rgba(5,9,20,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  z-index:10;
+}
+
+.wrap{max-width:1100px;margin:auto;padding:14px}
+
+h1{font-size:18px;margin:0}
+.subtitle{font-size:12px;color:var(--muted)}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+
+button{
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:8px 12px;
+  border-radius:12px;
+  cursor:pointer;
+}
+button:hover{border-color:var(--accent)}
+
+/* ===============================
+   FORM CONTROLS – FIXED DROPDOWNS
+================================ */
+input, select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#121c2f;
+  color:var(--text);
+  font-size:14px;
+}
+
+/* 🔴 CRITICAL FIX */
+select, option, optgroup{
+  background-color:#121c2f !important;
+  color:#e5e7eb !important;
+}
+
+/* Remove native arrow */
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #e5e7eb 50%),
+    linear-gradient(135deg, #e5e7eb 50%, transparent 50%),
+    linear-gradient(to right, rgba(148,163,184,.3), rgba(148,163,184,.3));
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px),
+    calc(100% - 38px) 50%;
+  background-size:
+    6px 6px,
+    6px 6px,
+    1px 60%;
+  background-repeat:no-repeat;
+  padding-right:44px;
+}
+
+select:focus, input:focus{
+  outline:none;
+  border-color:var(--accent);
+}
+
+label{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+/* ===============================
+   LAYOUT
+================================ */
+main{padding:18px 0}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:14px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+.card{
+  background:rgba(18,28,47,.9);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+
+.card .head{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.card .body{padding:12px}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+@media(max-width:520px){
+  .row{grid-template-columns:1fr}
+}
+
+.kpi{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:8px;
+}
+
+/* ===============================
+   FOOTER
+================================ */
+footer{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  padding:14px;
+}
+
+/* ===============================
+   PRINT
+================================ */
+@media print{
+  header, footer, button{display:none}
+  body{background:#fff;color:#000}
+  .card{background:#fff;border:1px solid #ccc}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Sextant + Intercept Calculator</h1>
+    <div class="subtitle">Ho corrections • LHA / Hc / Zn • Intercept method</div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+<div class="grid">
+
+<!-- INPUT CARD -->
+<div class="card">
+  <div class="head"><strong>Inputs</strong></div>
+  <div class="body">
+
+    <div class="row">
+      <div>
+        <label>Celestial body</label>
+        <select>
+          <option>☉ Sun</option>
+          <option>🌙 Moon</option>
+          <option>⭐ Star / Planet</option>
+        </select>
+      </div>
+      <div>
+        <label>Limb</label>
+        <select>
+          <option>Lower limb</option>
+          <option>Upper limb</option>
+          <option>Center</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Hs (deg min)</label>
+        <input placeholder="45 30.2">
+      </div>
+      <div>
+        <label>Index error (′)</label>
+        <input placeholder="+2.0">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Height of eye</label>
+        <input placeholder="2.0">
+      </div>
+      <div>
+        <label>Units</label>
+        <select>
+          <option>meters</option>
+          <option>feet</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- OUTPUT CARD -->
+<div class="card">
+  <div class="head"><strong>Results</strong></div>
+  <div class="body">
+
+    <div class="kpi">
+      <span>Ho</span>
+      <strong>—</strong>
+    </div>
+    <div class="kpi">
+      <span>LHA</span>
+      <strong>—</strong>
+    </div>
+    <div class="kpi">
+      <span>Hc</span>
+      <strong>—</strong>
+    </div>
+    <div class="kpi">
+      <span>Zn</span>
+      <strong>—</strong>
+    </div>
+    <div class="kpi">
+      <span>Intercept</span>
+      <strong>—</strong>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</div>
+</main>
+
+<footer>
+© 2026 Sextant + Intercept Calculator • v1.0-B
+</footer>
+
+</body>
+</html>
